@@ -1,0 +1,19 @@
+name: Single-container Deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      
+      - run: docker-compose up --build
+
+      - run: docker push actions-website
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
